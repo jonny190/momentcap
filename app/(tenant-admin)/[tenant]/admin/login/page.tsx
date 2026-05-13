@@ -16,7 +16,7 @@ export default function TenantAdminLogin() {
       password: form.get("password"),
       redirect: false,
     })
-    if (result?.error) {
+    if (!result?.ok) {
       setError("Invalid credentials")
     } else {
       router.push(`/${params.tenant}/admin`)
@@ -29,16 +29,22 @@ export default function TenantAdminLogin() {
         <h1 className="text-white text-xl font-bold mb-2">MomentCap</h1>
         <p className="text-gray-500 text-sm mb-6">{params.tenant}</p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label htmlFor="email" className="sr-only">Email</label>
           <input
+            id="email"
             name="email"
             type="email"
+            autoComplete="email"
             placeholder="Email"
             required
             className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 text-sm"
           />
+          <label htmlFor="password" className="sr-only">Password</label>
           <input
+            id="password"
             name="password"
             type="password"
+            autoComplete="current-password"
             placeholder="Password"
             required
             className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 text-sm"

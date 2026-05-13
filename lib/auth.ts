@@ -2,7 +2,19 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
+import { timingSafeEqual } from "crypto"
 import { db } from "./db"
+
+function safeEqual(a: string, b: string): boolean {
+  try {
+    const bufA = Buffer.from(a)
+    const bufB = Buffer.from(b)
+    if (bufA.length !== bufB.length) return false
+    return timingSafeEqual(bufA, bufB)
+  } catch {
+    return false
+  }
+}
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   session: { strategy: "jwt" },
@@ -18,10 +30,9 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         const password = credentials?.password as string
         if (!email || !password) return null
 
-        if (
-          email === process.env.PLATFORM_ADMIN_EMAIL &&
-          password === process.env.PLATFORM_ADMIN_PASSWORD
-        ) {
+        const adminEmail = process.env.PLATFORM_ADMIN_EMAIL ?? ""
+        const adminPassword = process.env.PLATFORM_ADMIN_PASSWORD ?? ""
+        if (safeEqual(email, adminEmail) && safeEqual(password, adminPassword)) {
           return { id: "platform_admin", email, role: "platform_admin" }
         }
 
@@ -45,9 +56,9 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     jwt({ token, user, trigger, session }) {
       if (user) {
         const u = user as Record<string, unknown>
-        token.role = u.role
-        token.tenantId = u.tenantId ?? null
-        token.tenantSlug = u.tenantSlug ?? null
+        token.role = u.role as "platform_admin" | "tenant_admin" | undefined
+        token.tenantId = (u.tenantId as string | null | undefined) ?? null
+        token.tenantSlug = (u.tenantSlug as string | null | undefined) ?? null
         token.impersonatingAs = null
         token.impersonatingSlug = null
       }

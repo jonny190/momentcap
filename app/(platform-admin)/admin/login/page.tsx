@@ -15,7 +15,7 @@ export default function PlatformAdminLogin() {
       password: form.get("password"),
       redirect: false,
     })
-    if (result?.error) {
+    if (!result?.ok) {
       setError("Invalid credentials")
     } else {
       router.push("/admin")
@@ -27,16 +27,22 @@ export default function PlatformAdminLogin() {
       <div className="w-full max-w-sm p-8 border border-gray-800 rounded-xl">
         <h1 className="text-white text-xl font-bold mb-6">Platform Admin</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label htmlFor="email" className="sr-only">Email</label>
           <input
+            id="email"
             name="email"
             type="email"
+            autoComplete="email"
             placeholder="Email"
             required
             className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 text-sm"
           />
+          <label htmlFor="password" className="sr-only">Password</label>
           <input
+            id="password"
             name="password"
             type="password"
+            autoComplete="current-password"
             placeholder="Password"
             required
             className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2 text-sm"

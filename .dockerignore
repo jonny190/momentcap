@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+uploads
+prisma/*.db
+prisma/*.db-shm
+prisma/*.db-wal
+.env
+.env.local
+.superpowers
+tests

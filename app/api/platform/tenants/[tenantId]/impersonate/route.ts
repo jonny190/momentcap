@@ -28,7 +28,7 @@ export async function POST(
     },
   })
 
-  await unstable_update({ impersonatingAs: tenant.id, impersonatingSlug: tenant.slug })
+  await unstable_update({ user: { impersonatingAs: tenant.id, impersonatingSlug: tenant.slug } })
 
   return NextResponse.json({ ok: true, tenantSlug: tenant.slug })
 }

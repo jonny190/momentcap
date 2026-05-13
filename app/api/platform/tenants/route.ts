@@ -1,10 +1,11 @@
 // app/api/platform/tenants/route.ts
 import { NextRequest, NextResponse } from "next/server"
+import type { Session } from "next-auth"
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import bcrypt from "bcryptjs"
 
-function assertPlatformAdmin(session: Awaited<ReturnType<typeof auth>>) {
+function assertPlatformAdmin(session: Session | null) {
   return session?.user.role === "platform_admin"
 }
 

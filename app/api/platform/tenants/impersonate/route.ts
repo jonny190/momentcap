@@ -19,7 +19,7 @@ export async function DELETE(req: NextRequest) {
         }),
       },
     })
-    await unstable_update({ impersonatingAs: null, impersonatingSlug: null })
+    await unstable_update({ user: { impersonatingAs: null, impersonatingSlug: null } })
   }
 
   return NextResponse.json({ ok: true })

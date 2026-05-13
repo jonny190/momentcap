@@ -8,14 +8,20 @@ export default function NewQRCode() {
   const router = useRouter()
   const params = useParams<{ tenant: string; eventId: string }>()
   const [label, setLabel] = useState("")
+  const [error, setError] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await fetch(`/api/admin/events/${params.eventId}/qrcodes`, {
+    setError("")
+    const res = await fetch(`/api/admin/events/${params.eventId}/qrcodes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ label }),
     })
+    if (!res.ok) {
+      setError("Failed to create QR code")
+      return
+    }
     router.push(`/${params.tenant}/admin/events/${params.eventId}`)
   }
 
@@ -34,6 +40,7 @@ export default function NewQRCode() {
             className="mt-1 w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white"
           />
         </div>
+        {error && <p className="text-red-400 text-sm">{error}</p>}
         <Button type="submit">Create QR Code</Button>
       </form>
     </div>

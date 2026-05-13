@@ -22,7 +22,8 @@ export async function GET(
   const baseUrl = process.env.AUTH_URL ?? "http://localhost:3000"
   const captureUrl = `${baseUrl}/c/${qrCode.token}`
   const png = await generateQRCodePNG(captureUrl)
-  const label = qrCode.label ?? "primary"
+  const rawLabel = qrCode.label ?? "primary"
+  const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "_")
 
   return new NextResponse(png, {
     headers: {

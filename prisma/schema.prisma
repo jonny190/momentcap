@@ -27,7 +27,7 @@ model Event {
   slug      String
   active    Boolean   @default(true)
   createdAt DateTime  @default(now())
-  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   qrCodes   QRCode[]
 
   @@unique([tenantId, slug])
@@ -39,7 +39,7 @@ model QRCode {
   label     String?
   token     String   @unique @default(cuid())
   createdAt DateTime @default(now())
-  event     Event    @relation(fields: [eventId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   photos    Photo[]
 }
 
@@ -48,7 +48,7 @@ model Photo {
   qrCodeId   String
   filename   String
   uploadedAt DateTime @default(now())
-  qrCode     QRCode   @relation(fields: [qrCodeId], references: [id])
+  qrCode     QRCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
 }
 
 model AuditLog {
@@ -57,5 +57,5 @@ model AuditLog {
   action    String
   metadata  String
   createdAt DateTime @default(now())
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }

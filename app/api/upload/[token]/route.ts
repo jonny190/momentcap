@@ -24,9 +24,21 @@ export async function POST(
     return NextResponse.json({ error: "No file provided" }, { status: 400 })
   }
 
-  const filename = await saveFile(file, qrCode.event.tenant.slug, qrCode.event.slug)
+  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"]
+  const MAX_SIZE = 20 * 1024 * 1024 // 20 MB
 
-  await db.photo.create({ data: { qrCodeId: qrCode.id, filename } })
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return NextResponse.json({ error: "File type not allowed" }, { status: 415 })
+  }
+  if (file.size > MAX_SIZE) {
+    return NextResponse.json({ error: "File too large" }, { status: 413 })
+  }
 
-  return NextResponse.json({ ok: true })
+  try {
+    const filename = await saveFile(file, qrCode.event.tenant.slug, qrCode.event.slug)
+    await db.photo.create({ data: { qrCodeId: qrCode.id, filename } })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 })
+  }
 }

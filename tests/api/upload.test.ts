@@ -36,6 +36,40 @@ describe("POST /api/upload/[token]", () => {
     expect(res.status).toBe(404)
   })
 
+  it("returns 404 when event is inactive", async () => {
+    vi.mocked(db.qRCode.findUnique).mockResolvedValue({
+      id: "qr1", token: "t", label: null, eventId: "ev1", createdAt: new Date(),
+      event: { id: "ev1", active: false, tenant: { slug: "daveys", enabled: true }, slug: "wedding" },
+    } as any)
+    const form = new FormData()
+    form.append("photo", new File(["img"], "p.jpg", { type: "image/jpeg" }))
+    const req = new NextRequest("http://localhost/api/upload/t", { method: "POST", body: form })
+    const res = await POST(req, { params: Promise.resolve({ token: "t" }) })
+    expect(res.status).toBe(404)
+  })
+
+  it("returns 404 when tenant is disabled", async () => {
+    vi.mocked(db.qRCode.findUnique).mockResolvedValue({
+      id: "qr1", token: "t", label: null, eventId: "ev1", createdAt: new Date(),
+      event: { id: "ev1", active: true, tenant: { slug: "daveys", enabled: false }, slug: "wedding" },
+    } as any)
+    const form = new FormData()
+    form.append("photo", new File(["img"], "p.jpg", { type: "image/jpeg" }))
+    const req = new NextRequest("http://localhost/api/upload/t", { method: "POST", body: form })
+    const res = await POST(req, { params: Promise.resolve({ token: "t" }) })
+    expect(res.status).toBe(404)
+  })
+
+  it("returns 400 when no photo field in form data", async () => {
+    vi.mocked(db.qRCode.findUnique).mockResolvedValue({
+      id: "qr1", token: "t", label: null, eventId: "ev1", createdAt: new Date(),
+      event: { id: "ev1", active: true, tenant: { slug: "daveys", enabled: true }, slug: "wedding" },
+    } as any)
+    const req = new NextRequest("http://localhost/api/upload/t", { method: "POST", body: new FormData() })
+    const res = await POST(req, { params: Promise.resolve({ token: "t" }) })
+    expect(res.status).toBe(400)
+  })
+
   it("returns 200 and creates photo record for valid token", async () => {
     vi.mocked(db.qRCode.findUnique).mockResolvedValue({
       id: "qr1",

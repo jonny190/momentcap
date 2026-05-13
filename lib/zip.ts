@@ -1,6 +1,6 @@
 import archiver from "archiver"
 import { createReadStream } from "fs"
-import { join } from "path"
+import { join, resolve as resolvePath } from "path"
 
 export async function createEventZip(
   photos: Array<{ filename: string }>
@@ -13,8 +13,10 @@ export async function createEventZip(
     archive.on("end", () => resolve(Buffer.concat(chunks)))
     archive.on("error", reject)
 
+    const base = resolvePath(process.cwd(), "uploads")
     for (const photo of photos) {
-      const filePath = join(process.cwd(), "uploads", photo.filename)
+      const filePath = resolvePath(base, photo.filename)
+      if (!filePath.startsWith(base + "/")) continue
       const name = photo.filename.split("/").pop()!
       archive.append(createReadStream(filePath), { name })
     }

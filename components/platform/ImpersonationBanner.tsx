@@ -13,7 +13,7 @@ export function ImpersonationBanner({ tenantSlug }: { tenantSlug: string }) {
   return (
     <div className="w-full bg-yellow-950 border-b border-yellow-800 px-4 py-2 flex items-center justify-between gap-4">
       <p className="text-yellow-300 text-sm">
-        <strong>Impersonating:</strong> {tenantSlug} &mdash; you are acting as this tenant&apos;s admin
+        <strong>Impersonating:</strong> {tenantSlug} - you are acting as this tenant&apos;s admin
       </p>
       <Button
         variant="secondary"

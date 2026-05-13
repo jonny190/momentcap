@@ -1,0 +1,61 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Tenant {
+  id           String     @id @default(cuid())
+  name         String
+  slug         String     @unique
+  email        String     @unique
+  passwordHash String
+  enabled      Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  events       Event[]
+  auditLogs    AuditLog[]
+}
+
+model Event {
+  id        String    @id @default(cuid())
+  tenantId  String
+  name      String
+  slug      String
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  qrCodes   QRCode[]
+
+  @@unique([tenantId, slug])
+}
+
+model QRCode {
+  id        String   @id @default(cuid())
+  eventId   String
+  label     String?
+  token     String   @unique @default(cuid())
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id])
+  photos    Photo[]
+}
+
+model Photo {
+  id         String   @id @default(cuid())
+  qrCodeId   String
+  filename   String
+  uploadedAt DateTime @default(now())
+  qrCode     QRCode   @relation(fields: [qrCodeId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  tenantId  String
+  action    String
+  metadata  String
+  createdAt DateTime @default(now())
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+}

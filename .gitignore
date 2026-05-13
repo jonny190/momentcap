@@ -51,3 +51,5 @@ next-env.d.ts
 
 # Superpowers brainstorm files
 .superpowers/
+
+/app/generated/prisma

@@ -20,10 +20,10 @@ export default async function CapturePage({
 
   const qrCode = await db.qRCode.findUnique({
     where: { token },
-    include: { event: true },
+    include: { event: { include: { tenant: true } } },
   })
 
-  if (!qrCode || !qrCode.event.active) {
+  if (!qrCode || !qrCode.event.active || !qrCode.event.tenant.enabled) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <p className="text-gray-400 text-sm">This event has ended.</p>

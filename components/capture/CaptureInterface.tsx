@@ -5,6 +5,7 @@ type Status = "idle" | "uploading" | "done" | "error"
 
 export function CaptureInterface({ token }: { token: string }) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [status, setStatus] = useState<Status>("idle")
 
   const openCamera = () => inputRef.current?.click()
@@ -13,9 +14,16 @@ export function CaptureInterface({ token }: { token: string }) {
     openCamera()
   }, [])
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (status === "uploading") return
 
     setStatus("uploading")
 
@@ -28,7 +36,8 @@ export function CaptureInterface({ token }: { token: string }) {
       setStatus("error")
     } finally {
       if (inputRef.current) inputRef.current.value = ""
-      setTimeout(() => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => {
         setStatus("idle")
         openCamera()
       }, 1200)

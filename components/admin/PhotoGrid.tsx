@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button"
 interface Photo {
   id: string
   filename: string
-  uploadedAt: string
+  uploadedAt: Date
   qrCode: { label: string | null }
 }
 

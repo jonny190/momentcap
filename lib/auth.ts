@@ -2,18 +2,14 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
-import { timingSafeEqual } from "crypto"
+import { timingSafeEqual, createHmac } from "crypto"
 import { db } from "./db"
 
 function safeEqual(a: string, b: string): boolean {
-  try {
-    const bufA = Buffer.from(a)
-    const bufB = Buffer.from(b)
-    if (bufA.length !== bufB.length) return false
-    return timingSafeEqual(bufA, bufB)
-  } catch {
-    return false
-  }
+  const key = process.env.AUTH_SECRET ?? "constant-fallback-key"
+  const ha = createHmac("sha256", key).update(a).digest()
+  const hb = createHmac("sha256", key).update(b).digest()
+  return timingSafeEqual(ha, hb)
 }
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({

@@ -22,7 +22,6 @@ export default async function PlatformAdmin() {
       slug: tenant.slug,
       email: tenant.email,
       enabled: tenant.enabled,
-      createdAt: tenant.createdAt,
       _count: tenant._count,
       photoCount: await db.photo.count({
         where: { qrCode: { event: { tenantId: tenant.id } } },

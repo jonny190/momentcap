@@ -29,12 +29,14 @@ export function TenantRow({ tenant }: TenantRowProps) {
   }
 
   async function handleToggleEnabled() {
-    await fetch(`/api/platform/tenants/${tenant.id}`, {
+    const res = await fetch(`/api/platform/tenants/${tenant.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ enabled: !tenant.enabled }),
     })
-    router.refresh()
+    if (res.ok) {
+      router.refresh()
+    }
   }
 
   return (

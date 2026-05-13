@@ -21,10 +21,15 @@ export async function PATCH(
   if (body.name) updateData.name = body.name.trim()
   if (body.password) updateData.passwordHash = await bcrypt.hash(body.password, 12)
 
+  if (Object.keys(updateData).length === 0) {
+    return NextResponse.json({ error: "No valid fields to update" }, { status: 400 })
+  }
+
   const tenant = await db.tenant.update({
     where: { id: tenantId },
     data: updateData,
   })
 
-  return NextResponse.json({ ...tenant, passwordHash: undefined })
+  const { passwordHash: _pw, ...safe } = tenant
+  return NextResponse.json(safe)
 }

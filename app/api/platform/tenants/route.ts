@@ -20,13 +20,15 @@ export async function GET(req: NextRequest) {
   })
 
   const tenantsWithPhotos = await Promise.all(
-    tenants.map(async (tenant) => ({
-      ...tenant,
-      passwordHash: undefined,
-      photoCount: await db.photo.count({
-        where: { qrCode: { event: { tenantId: tenant.id } } },
-      }),
-    }))
+    tenants.map(async (tenant) => {
+      const { passwordHash: _pw, ...safe } = tenant
+      return {
+        ...safe,
+        photoCount: await db.photo.count({
+          where: { qrCode: { event: { tenantId: tenant.id } } },
+        }),
+      }
+    })
   )
 
   return NextResponse.json(tenantsWithPhotos)
@@ -56,5 +58,6 @@ export async function POST(req: NextRequest) {
     data: { name, slug: slug.toLowerCase(), email, passwordHash },
   })
 
-  return NextResponse.json({ ...tenant, passwordHash: undefined }, { status: 201 })
+  const { passwordHash: _pw, ...safe } = tenant
+  return NextResponse.json(safe, { status: 201 })
 }

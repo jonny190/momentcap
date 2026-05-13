@@ -23,7 +23,7 @@ export async function GET(
 
   const zip = await createEventZip(photos)
 
-  return new NextResponse(zip, {
+  return new NextResponse(new Uint8Array(zip), {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${event.slug}-photos.zip"`,

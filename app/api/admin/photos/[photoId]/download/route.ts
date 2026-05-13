@@ -39,7 +39,7 @@ export async function GET(
   const contentType = MIME_TYPES[ext] ?? "application/octet-stream"
   const name = photo.filename.split("/").pop()!
 
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": contentType,
       "Content-Disposition": `attachment; filename="${name}"`,

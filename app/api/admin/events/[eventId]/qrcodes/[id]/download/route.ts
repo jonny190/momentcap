@@ -25,7 +25,7 @@ export async function GET(
   const rawLabel = qrCode.label ?? "primary"
   const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "_")
 
-  return new NextResponse(png, {
+  return new NextResponse(new Uint8Array(png), {
     headers: {
       "Content-Type": "image/png",
       "Content-Disposition": `attachment; filename="qr-${label}.png"`,

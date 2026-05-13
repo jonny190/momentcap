@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Photo uploads
+/uploads
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+# Superpowers brainstorm files
+.superpowers/

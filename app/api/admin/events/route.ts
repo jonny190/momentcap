@@ -37,9 +37,15 @@ export async function POST(req: NextRequest) {
 
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
 
-  const event = await db.event.create({
-    data: { tenantId, name: name.trim(), slug },
-  })
-
-  return NextResponse.json(event, { status: 201 })
+  try {
+    const event = await db.event.create({
+      data: { tenantId, name: name.trim(), slug },
+    })
+    return NextResponse.json(event, { status: 201 })
+  } catch (e: any) {
+    if (e?.code === "P2002") {
+      return NextResponse.json({ error: "An event with this name already exists" }, { status: 409 })
+    }
+    throw e
+  }
 }

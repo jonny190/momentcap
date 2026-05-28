@@ -22,21 +22,28 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         password: { type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email as string
+        const rawEmail = credentials?.email as string
         const password = credentials?.password as string
-        if (!email || !password) return null
+        if (!rawEmail || !password) return null
+        const email = rawEmail.trim().toLowerCase()
 
-        const adminEmail = process.env.PLATFORM_ADMIN_EMAIL ?? ""
+        const adminEmail = (process.env.PLATFORM_ADMIN_EMAIL ?? "").trim().toLowerCase()
         const adminPassword = process.env.PLATFORM_ADMIN_PASSWORD ?? ""
-        if (safeEqual(email, adminEmail) && safeEqual(password, adminPassword)) {
+        if (adminEmail && safeEqual(email, adminEmail) && safeEqual(password, adminPassword)) {
           return { id: "platform_admin", email, role: "platform_admin" }
         }
 
         const tenant = await db.tenant.findFirst({ where: { email, enabled: true } })
-        if (!tenant) return null
+        if (!tenant) {
+          console.warn(`[auth] login failed: no enabled tenant for email "${email}"`)
+          return null
+        }
 
         const valid = await bcrypt.compare(password, tenant.passwordHash)
-        if (!valid) return null
+        if (!valid) {
+          console.warn(`[auth] login failed: bad password for tenant "${email}"`)
+          return null
+        }
 
         return {
           id: tenant.id,

@@ -41,14 +41,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { name, slug, email, password } = await req.json()
+  const { name, slug, email: rawEmail, password } = await req.json()
 
-  if (!name || !slug || !email || !password) {
+  if (!name || !slug || !rawEmail || !password) {
     return NextResponse.json({ error: "All fields required" }, { status: 400 })
   }
 
+  const email = (rawEmail as string).trim().toLowerCase()
+  const normalizedSlug = (slug as string).toLowerCase()
+
   const existing = await db.tenant.findFirst({
-    where: { OR: [{ slug }, { email }] },
+    where: { OR: [{ slug: normalizedSlug }, { email }] },
   })
   if (existing) {
     return NextResponse.json({ error: "Slug or email already in use" }, { status: 409 })
@@ -56,7 +59,7 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await bcrypt.hash(password, 12)
   const tenant = await db.tenant.create({
-    data: { name, slug: slug.toLowerCase(), email, passwordHash },
+    data: { name, slug: normalizedSlug, email, passwordHash },
   })
 
   const { passwordHash: _pw, ...safe } = tenant

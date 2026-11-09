@@ -11,7 +11,8 @@ MomentCap ships as a single Docker image. Everything it stores goes in `/data`, 
    - Destination path: `/data`
 4. Add the environment variables below.
 5. Set the domain as plain `http://` (the Cloudflare tunnel takes care of HTTPS).
-6. Deploy.
+6. Turn on the health check with path `/api/health`, port `3000` and host `127.0.0.1`. Leave the host as `localhost` and the check fails: inside the Alpine image, `localhost` resolves to the IPv6 address first, but the server only listens on IPv4, so every attempt gets "connection refused" and Coolify rolls the deploy back.
+7. Deploy.
 
 The container fixes ownership of `/data` on start, so a named volume and a host folder both work.
 
@@ -28,7 +29,11 @@ The container fixes ownership of `/data` on start, so a named volume and a host 
 
 ### Health check
 
-`GET /api/health` returns `{"ok":true}` once the database opens. The image has a Docker `HEALTHCHECK` built in.
+`GET /api/health` returns `{"ok":true}` once the database opens. The image has a Docker `HEALTHCHECK` built in, and it uses `127.0.0.1` for the same reason as above.
+
+## Current deployment
+
+The live instance runs on the Daveys Coolify server, in the MomentCap project, at https://moments.daveys.xyz. It deploys from `main`. The admin password is the `ADMIN_PASSWORD` environment variable on that application.
 
 ## Cloudflare
 

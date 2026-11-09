@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 import { logout } from "./actions"
 
 const NAV = [
@@ -31,10 +30,7 @@ export function AdminShell({ eventName, active, children }: { eventName: string;
           </form>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
-      <footer className="flex justify-center pb-8">
-        <PoweredByCoria tone="light" />
-      </footer>
+      <main className="mx-auto max-w-5xl px-4 pt-8 pb-12">{children}</main>
     </div>
   )
 }

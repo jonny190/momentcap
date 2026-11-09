@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 import { savedName, saveName } from "./identity"
 import { PrintStack } from "./PrintStack"
 import { UploadQueue, type QueueItem } from "./upload-queue"
@@ -167,10 +166,6 @@ export function CaptureScreen({ token, eventName, welcomeMessage, uploadsOpen, g
           Add photos you already took
         </button>
       )}
-
-      <footer className="mt-3 flex shrink-0 justify-center">
-        <PoweredByCoria />
-      </footer>
 
       <input ref={photoInput} type="file" accept="image/*" capture="environment" hidden onChange={onFiles} />
       <input ref={videoInput} type="file" accept="video/*" capture="environment" hidden onChange={onFiles} />

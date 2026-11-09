@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { connection } from "next/server"
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 import { eventForToken } from "@/modules/event/repo"
 import { LinkNotValid } from "@/modules/guest/LinkNotValid"
 import { Gallery } from "@/modules/media/ui/Gallery"
@@ -24,16 +23,13 @@ export default async function GuestAlbum({ params }: { params: Promise<{ token: 
           </Link>
         )}
       </header>
-      <div className="px-1 pb-6">
+      <div className="px-1 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         {event.galleryOpen ? (
           <Gallery mode="guest" token={token} />
         ) : (
           <p className="px-4 py-16 text-center text-lilac">The organiser is not sharing the album right now.</p>
         )}
       </div>
-      <footer className="flex justify-center pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <PoweredByCoria />
-      </footer>
     </main>
   )
 }

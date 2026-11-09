@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { requireAdminPage } from "@/modules/admin/guard"
 import { PrintButton } from "@/modules/admin/PrintButton"
 import { guestUrl } from "@/modules/core/public-url"
@@ -26,12 +25,7 @@ export default async function PrintSign() {
           <p className="mt-[6mm] text-[13pt] leading-snug">Scan with your phone camera to add your photos and videos to our album.</p>
         </div>
         <div className="w-[78mm] [&_svg]:h-auto [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
-        <div className="space-y-[5mm]">
-          <p className="text-[11pt] text-ink/70">No app and no sign up. Just point, shoot and it is shared.</p>
-          <p className="flex items-center justify-center gap-2 text-[8pt] text-ink/50">
-            Powered by <img src="/coria-logo.png" alt="Coria" className="h-[12pt] w-auto" />
-          </p>
-        </div>
+        <p className="text-[11pt] text-ink/70">No app and no sign up. Just point, shoot and it is shared.</p>
       </article>
     </div>
   )

@@ -1,4 +1,3 @@
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 
 export function LinkNotValid() {
   return (
@@ -9,7 +8,6 @@ export function LinkNotValid() {
           The organiser has issued a new QR code. Scan one of the codes at the venue to carry on sharing.
         </p>
       </div>
-      <PoweredByCoria />
     </main>
   )
 }

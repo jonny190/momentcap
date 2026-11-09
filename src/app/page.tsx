@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { connection } from "next/server"
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 import { getEvent } from "@/modules/event/repo"
 
 export default async function Home() {
@@ -15,8 +14,7 @@ export default async function Home() {
           straight away, with no app and no sign up.
         </p>
       </div>
-      <div className="flex items-center justify-between">
-        <PoweredByCoria />
+      <div className="flex justify-end">
         <Link href="/admin" className="text-xs text-lilac/70 hover:text-lilac">
           Organiser sign in
         </Link>

@@ -41,15 +41,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Photo uploads
-/uploads
+# Local data directory (database, photos, videos)
+/data
 
 # SQLite database
 *.db
 *.db-shm
 *.db-wal
 
-# Superpowers brainstorm files
-.superpowers/
-
-/app/generated/prisma

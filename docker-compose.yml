@@ -1,18 +1,16 @@
+# Local run, or a Coolify "Docker Compose" deployment.
 services:
-  app:
+  momentcap:
     build: .
     ports:
       - "3000:3000"
     volumes:
-      - uploads:/app/uploads
-      - db:/app/prisma
+      - momentcap-data:/data
     environment:
-      DATABASE_URL: "file:/app/prisma/prod.db"
-      AUTH_SECRET: "local-dev-secret-change-in-production"
-      AUTH_URL: "http://localhost:3000"
-      PLATFORM_ADMIN_EMAIL: "admin@momentcap.app"
-      PLATFORM_ADMIN_PASSWORD: "changeme"
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me}
+      SESSION_SECRET: ${SESSION_SECRET:-}
+      PUBLIC_URL: ${PUBLIC_URL:-}
+    restart: unless-stopped
 
 volumes:
-  uploads:
-  db:
+  momentcap-data:

@@ -32,5 +32,3 @@ Open http://localhost:3000/admin, sign in, and the overview page shows the guest
 - `docs/` has the technical documentation, `guides/` has the user guides.
 
 More detail is in [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
-
-Powered by [Coria](https://coria.ai).

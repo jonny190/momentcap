@@ -19,7 +19,7 @@ Single-event shared camera. Guests scan a QR code, shoot with the phone's native
 - Pages that read SQLite without calling `cookies()` must `await connection()` first, or Next will prerender them at build time.
 - There's deliberately no `proxy.ts`, because it would buffer upload bodies in memory.
 - Guest UI tokens: plum night `#21182a`, print white, brass shutter `#d9ae55`. Gloock for the event name only, Albert Sans for everything else.
-- Every page carries the "Powered by Coria" footer (`src/components/PoweredByCoria.tsx`), linking to https://coria.ai.
+- This is a personal project, not a Coria one: no "Powered by Coria" branding, and no Notes documentation (docs live in the repo only).
 - Docs live in `docs/` and user guides in `guides/`. Keep them updated with code changes. No em dashes and no emojis in written material.
 
 ## Testing

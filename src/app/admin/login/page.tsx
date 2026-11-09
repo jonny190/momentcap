@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 import { adminConfigured, isAdmin } from "@/modules/auth/session"
 import { LoginForm } from "@/modules/admin/LoginForm"
-import { PoweredByCoria } from "@/components/PoweredByCoria"
 
 export const metadata = { title: "Sign in | MomentCap" }
 
@@ -18,7 +17,6 @@ export default async function LoginPage() {
           <p className="mt-6 text-sm text-red-700">Sign in is switched off. Set ADMIN_PASSWORD on the server to turn it on.</p>
         )}
       </div>
-      <PoweredByCoria tone="light" />
     </main>
   )
 }

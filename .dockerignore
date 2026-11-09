@@ -1,11 +1,11 @@
 node_modules
 .next
 .git
-uploads
-prisma/*.db
-prisma/*.db-shm
-prisma/*.db-wal
+data
 .env
-.env.local
-.superpowers
+.env.*
+!.env.example
 tests
+docs
+guides
+docker-compose.yml

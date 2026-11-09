@@ -1,36 +1,50 @@
-FROM node:20-alpine AS deps
+# syntax=docker/dockerfile:1
+
+FROM node:24-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache python3 make g++
-COPY package*.json ./
-RUN npm ci --include=dev
+COPY package.json package-lock.json ./
+RUN npm ci
 
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS prod-deps
 WORKDIR /app
+RUN apk add --no-cache python3 make g++
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:24-alpine AS builder
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npx prisma generate
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV=production
+# ffmpeg builds video previews, su-exec drops root after fixing volume ownership.
+RUN apk add --no-cache ffmpeg su-exec tini \
+  && addgroup -S -g 1001 nodejs \
+  && adduser -S -u 1001 -G nodejs nextjs \
+  && mkdir -p /data && chown nextjs:nodejs /data
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0 \
+    DATA_DIR=/data
 
+COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/app/generated ./app/generated
-COPY --from=builder /app/node_modules ./node_modules
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-RUN mkdir -p /app/uploads /app/prisma && chown -R nextjs:nodejs /app/uploads /app/prisma /app
-
-USER nextjs
+# Everything the app stores (database, originals, previews) lives here.
+# Map it to a persistent volume.
+VOLUME /data
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+ENTRYPOINT ["/sbin/tini", "--", "docker-entrypoint.sh"]
+CMD ["node", "server.js"]

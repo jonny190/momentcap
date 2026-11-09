@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MomentCap
 
-## Getting Started
+MomentCap is a shared camera for a single event. Guests scan a QR code, the page opens with a big shutter button, and every photo or video they take goes straight into one album. There's no app to install and nobody has to sign up.
 
-First, run the development server:
+The organiser has a small admin area where they can name the event, print a QR sign, look through everything that comes in, hide anything they'd rather guests didn't see, and download the lot as a ZIP.
+
+## Quick start
 
 ```bash
+cp .env.example .env.local   # set ADMIN_PASSWORD
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000/admin, sign in, and the overview page shows the guest QR code and link.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build (standalone output) |
+| `npm start` | Run the production build |
+| `npm test` | Unit and integration tests (Vitest) |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript, no emit |
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app` holds routes only. Pages and API handlers stay thin and call into modules.
+- `src/modules` holds the actual logic, split by area (core, event, auth, media, uploads, guest, admin).
+- `docs/` has the technical documentation, `guides/` has the user guides.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+More detail is in [docs/architecture.md](docs/architecture.md) and [docs/deployment.md](docs/deployment.md).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Powered by [Coria](https://coria.ai).
